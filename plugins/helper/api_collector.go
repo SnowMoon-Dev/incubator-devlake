@@ -59,7 +59,7 @@ type ApiCollectorArgs struct {
 	*/
 	UrlTemplate string `comment:"GoTemplate for API url"`
 	// (Optional) Return query string for request, or you can plug them into UrlTemplate directly
-	Query func(reqData *RequestData) (url.Values, error) `comment:"Extra query string when requesting API, like 'Since' option for jira issues collection"`
+	Query func(reqData *RequestData, taskCtx core.SubTaskContext) (url.Values, error) `comment:"Extra query string when requesting API, like 'Since' option for jira issues collection"`
 	// Some api might do pagination by http headers
 	Header      func(reqData *RequestData) (http.Header, error)
 	PageSize    int
@@ -187,7 +187,7 @@ func (collector *ApiCollector) Execute() error {
 						wg.Done()
 						recover() //nolint TODO: check the return and do log if not nil
 					}()
-					e := collector.exec(input)
+					e := collector.exec(input, logger)
 					// propagate error
 					if e != nil {
 						errors <- e
@@ -205,7 +205,7 @@ func (collector *ApiCollector) Execute() error {
 		}
 	} else {
 		// or we just did it once
-		err = collector.exec(nil)
+		err = collector.exec(nil, logger)
 	}
 
 	if err != nil {
@@ -217,7 +217,7 @@ func (collector *ApiCollector) Execute() error {
 	return err
 }
 
-func (collector *ApiCollector) exec(input interface{}) error {
+func (collector *ApiCollector) exec(input interface{}, logger core.Logger) error {
 	reqData := new(RequestData)
 	reqData.Input = input
 	if collector.args.PageSize <= 0 {
@@ -354,12 +354,13 @@ func (collector *ApiCollector) fetchAsync(reqData *RequestData, handler ApiAsync
 
 	}
 	apiUrl, err := collector.generateUrl(reqData.Pager, reqData.Input)
+
 	if err != nil {
 		return err
 	}
 	var apiQuery url.Values
 	if collector.args.Query != nil {
-		apiQuery, err = collector.args.Query(reqData)
+		apiQuery, err = collector.args.Query(reqData, collector.args.Ctx)
 		if err != nil {
 			return err
 		}

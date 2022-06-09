@@ -18,10 +18,7 @@ limitations under the License.
 package main // must be main for plugin entry point
 
 import (
-	"github.com/apache/incubator-devlake/config"
-	"github.com/apache/incubator-devlake/logger"
 	"github.com/apache/incubator-devlake/plugins/gitlab/impl"
-	"github.com/apache/incubator-devlake/plugins/tapd/models"
 	"github.com/apache/incubator-devlake/runner"
 	"github.com/spf13/cobra"
 )
@@ -32,31 +29,11 @@ var PluginEntry impl.Gitlab //nolint
 // standalone mode for debugging
 func main() {
 	gitlabCmd := &cobra.Command{Use: "gitlab"}
+	projectId := gitlabCmd.Flags().IntP("projectId", "p", 0, "projectId")
 	gitlabCmd.Run = func(c *cobra.Command, args []string) {
-		cfg := config.GetConfig()
-		log := logger.Global.Nested(gitlabCmd.Use)
-		db, err := runner.NewGormDb(cfg, log)
-		if err != nil {
-			panic(err)
-		}
-		wsList := make([]*models.TapdWorkspace, 0)
-		err = db.First(&wsList, "parent_id = ?", 59169984).Error
-		if err != nil {
-			panic(err)
-		}
-		projectList := []uint64{63281714,
-			34276182,
-			46319043,
-			50328292,
-			63984859,
-			55805854,
-			38496185,
-		}
-		for _, v := range projectList {
-			runner.DirectRun(gitlabCmd, args, PluginEntry, map[string]interface{}{
-				"projectId": v,
-			})
-		}
+		runner.DirectRun(gitlabCmd, args, PluginEntry, map[string]interface{}{
+			"projectId": projectId,
+		})
 	}
 
 	runner.RunCmd(gitlabCmd)

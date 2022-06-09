@@ -12,6 +12,7 @@ func main() {
 	githubCmd := &cobra.Command{Use: "gitee"}
 	owner := githubCmd.Flags().StringP("owner", "o", "", "github owner")
 	repo := githubCmd.Flags().StringP("repo", "r", "", "github repo")
+	token := githubCmd.Flags().StringP("auth", "a", "", "access token")
 	_ = githubCmd.MarkFlagRequired("owner")
 	_ = githubCmd.MarkFlagRequired("repo")
 
@@ -19,6 +20,7 @@ func main() {
 		runner.DirectRun(cmd, args, PluginEntry, map[string]interface{}{
 			"owner": *owner,
 			"repo":  *repo,
+			"token": *token,
 		})
 	}
 	runner.RunCmd(githubCmd)

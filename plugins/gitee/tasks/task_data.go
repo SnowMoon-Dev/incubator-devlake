@@ -11,6 +11,7 @@ type GiteeOptions struct {
 	Since string
 	Owner string
 	Repo  string
+	Token string
 }
 
 type GiteeTaskData struct {

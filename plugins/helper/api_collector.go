@@ -59,7 +59,7 @@ type ApiCollectorArgs struct {
 	*/
 	UrlTemplate string `comment:"GoTemplate for API url"`
 	// (Optional) Return query string for request, or you can plug them into UrlTemplate directly
-	Query func(reqData *RequestData, taskCtx core.SubTaskContext) (url.Values, error) `comment:"Extra query string when requesting API, like 'Since' option for jira issues collection"`
+	Query func(reqData *RequestData, option interface{}) (url.Values, error) `comment:"Extra query string when requesting API, like 'Since' option for jira issues collection"`
 	// Some api might do pagination by http headers
 	Header      func(reqData *RequestData) (http.Header, error)
 	PageSize    int
@@ -360,7 +360,7 @@ func (collector *ApiCollector) fetchAsync(reqData *RequestData, handler ApiAsync
 	}
 	var apiQuery url.Values
 	if collector.args.Query != nil {
-		apiQuery, err = collector.args.Query(reqData, collector.args.Ctx)
+		apiQuery, err = collector.args.Query(reqData, collector.args.Params)
 		if err != nil {
 			return err
 		}

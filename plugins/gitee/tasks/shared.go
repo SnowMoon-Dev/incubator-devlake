@@ -14,6 +14,7 @@ import (
 type GiteeApiParams struct {
 	Repo  string
 	Owner string
+	Token string
 }
 
 type GiteeInput struct {
@@ -54,9 +55,9 @@ func GetRawMessageFromResponse(res *http.Response) ([]json.RawMessage, error) {
 	return rawMessages, nil
 }
 
-func GetQuery(reqData *helper.RequestData, taskCtx core.SubTaskContext) (url.Values, error) {
+func GetQuery(reqData *helper.RequestData, options interface{}) (url.Values, error) {
 	query := url.Values{}
-	query.Set("access_token", taskCtx.GetConfig("GITEE_AUTH"))
+	query.Set("access_token", options.(GiteeApiParams).Token)
 	query.Set("with_stats", "true")
 	query.Set("sort", "asc")
 	query.Set("page", strconv.Itoa(reqData.Pager.Page))
@@ -71,6 +72,7 @@ func CreateRawDataSubTaskArgs(taskCtx core.SubTaskContext, Table string) (*helpe
 		Params: GiteeApiParams{
 			Repo:  data.Options.Repo,
 			Owner: data.Options.Owner,
+			Token: data.Options.Token,
 		},
 		Table: Table,
 	}

@@ -131,6 +131,7 @@ func (apiClient *ApiAsyncClient) DoAsync(
 		var err error
 		var res *http.Response
 		var body []byte
+		apiClient.logger.Debug("endpoint: %s  method: %s  header: %s  body: %s query: %s", path, method, header, body, query)
 		res, err = apiClient.Do(method, path, query, body, header)
 		if err == nil {
 			defer func(body io.ReadCloser) { body.Close() }(res.Body)

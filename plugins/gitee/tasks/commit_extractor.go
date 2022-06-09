@@ -28,51 +28,31 @@ type GiteeCommit struct {
 	Message string `json:"message"`
 }
 
-type GiteeCommitter struct {
-	Id                int    `json:"id"`
-	Login             string `json:"login"`
-	Name              string `json:"name"`
-	AvatarUrl         string `json:"avatar_url"`
-	EventsUrl         string `json:"events_url"`
-	FollowersUrl      string `json:"followers_url"`
-	FollowingUrl      string `json:"following_url"`
-	GistsUrl          string `json:"gists_url"`
-	HtmlUrl           string `json:"html_url"`
-	OrganizationsUrl  string `json:"organizations_url"`
-	ReceivedEventsUrl string `json:"received_events_url"`
-	Remark            string `json:"remark"`
-	ReposUrl          string `json:"repos_url"`
-	StarredUrl        string `json:"starred_url"`
-	SubscriptionsUrl  string `json:"subscriptions_url"`
-	Url               string `json:"url"`
-	Type              string `json:"type"`
-}
-
 type GiteeApiCommitResponse struct {
-	CommentsUrl    string `json:"comments_url"`
-	GiteeCommit    GiteeCommit
-	GiteeCommitter GiteeCommitter
-	HtmlUrl        string `json:"html_url"`
-	Sha            string `json:"sha"`
-	Url            string `json:"url"`
+	Author      *models.GiteeUser `json:"author"`
+	AuthorId    int
+	CommentsUrl string            `json:"comments_url"`
+	Commit      GiteeCommit       `json:"commit"`
+	Committer   *models.GiteeUser `json:"committer"`
+	HtmlUrl     string            `json:"html_url"`
+	Sha         string            `json:"sha"`
+	Url         string            `json:"url"`
 }
 
 func ExtractApiCommits(taskCtx core.SubTaskContext) error {
-	rawDataSubTaskArgs, data := CreateRawDataSubTaskArgs(taskCtx, RAW_COMMIT_TABLE)
+	rawDataSubTaskArgs, _ := CreateRawDataSubTaskArgs(taskCtx, RAW_COMMIT_TABLE)
 
 	extractor, err := helper.NewApiExtractor(helper.ApiExtractorArgs{
 		RawDataSubTaskArgs: *rawDataSubTaskArgs,
 		Extract: func(row *helper.RawData) ([]interface{}, error) {
+			results := make([]interface{}, 0, 3)
+
 			commit := &GiteeApiCommitResponse{}
+
 			err := json.Unmarshal(row.Data, commit)
 			if err != nil {
 				return nil, err
 			}
-			if commit.Sha == "" {
-				return nil, nil
-			}
-
-			results := make([]interface{}, 0, 3)
 
 			giteeCommit, err := ConvertCommit(commit)
 
@@ -81,25 +61,23 @@ func ExtractApiCommits(taskCtx core.SubTaskContext) error {
 			}
 
 			// create repo/commits relationship
-			giteeRepoCommit := &models.GiteeRepoCommit{RepoId: data.Repo.RepoId, CommitSha: commit.Sha}
+			//giteeRepoCommit := &models.GiteeRepoCommit{RepoId: data.Repo.RepoId, CommitSha: commit.Sha}
 
 			// create gitee user
-			giteeUserAuthor := &models.GiteeUser{}
-			giteeUserAuthor.Email = giteeCommit.AuthorEmail
-			giteeUserAuthor.Name = giteeCommit.AuthorName
+			//giteeUserAuthor := &models.GiteeUser{}
+			//giteeUserAuthor.Name = giteeUserAuthor.Name
 
-			results = append(results, giteeCommit)
-			results = append(results, giteeRepoCommit)
-			results = append(results, giteeUserAuthor)
-
-			// For Commiter Email is not same as AuthorEmail
-			if giteeCommit.CommitterEmail != giteeUserAuthor.Email {
-				gitlabUserCommitter := &models.GiteeUser{}
-				gitlabUserCommitter.Email = giteeCommit.CommitterEmail
-				gitlabUserCommitter.Name = giteeCommit.CommitterName
-				results = append(results, gitlabUserCommitter)
+			if commit.Author != nil {
+				giteeCommit.AuthorId = commit.Author.Id
+				results = append(results, commit.Author)
 			}
+			if commit.Committer != nil {
+				giteeCommit.CommitterId = commit.Committer.Id
+				results = append(results, commit.Committer)
 
+			}
+			results = append(results, giteeCommit)
+			//results = append(results, giteeRepoCommit)
 			return results, nil
 		},
 	})
@@ -111,17 +89,18 @@ func ExtractApiCommits(taskCtx core.SubTaskContext) error {
 	return extractor.Execute()
 }
 
-// Convert the API response to our DB model instance
+// ConvertCommit Convert the API response to our DB model instance
 func ConvertCommit(commit *GiteeApiCommitResponse) (*models.GiteeCommit, error) {
 	giteeCommit := &models.GiteeCommit{
 		Sha:            commit.Sha,
-		Message:        commit.GiteeCommit.Message,
-		AuthorName:     commit.GiteeCommit.Author.Name,
-		AuthorEmail:    commit.GiteeCommit.Author.Email,
-		AuthoredDate:   commit.GiteeCommit.Author.Date.ToTime(),
-		CommitterName:  commit.GiteeCommit.Author.Name,
-		CommitterEmail: commit.GiteeCommit.Author.Email,
-		CommittedDate:  commit.GiteeCommit.Author.Date.ToTime(),
+		AuthorId:       commit.Author.Id,
+		Message:        commit.Commit.Message,
+		AuthorName:     commit.Commit.Author.Name,
+		AuthorEmail:    commit.Commit.Author.Email,
+		AuthoredDate:   commit.Commit.Author.Date.ToTime(),
+		CommitterName:  commit.Commit.Author.Name,
+		CommitterEmail: commit.Commit.Author.Email,
+		CommittedDate:  commit.Commit.Author.Date.ToTime(),
 		WebUrl:         commit.Url,
 	}
 	return giteeCommit, nil

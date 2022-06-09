@@ -11,11 +11,12 @@ type InitSchemas struct{}
 func (*InitSchemas) Up(ctx context.Context, db *gorm.DB) error {
 	return db.Migrator().AutoMigrate(
 		&archived.GiteeCommit{},
+		&archived.GiteeUser{},
 	)
 }
 
 func (*InitSchemas) Version() uint64 {
-	return 20220407201136
+	return 20220407201139
 }
 
 func (*InitSchemas) Name() string {

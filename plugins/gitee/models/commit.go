@@ -9,6 +9,7 @@ type GiteeCommit struct {
 	Sha            string `gorm:"primaryKey;type:varchar(40)"`
 	CommentsUrl    string `gorm:"type:varchar(255)"`
 	Message        string
+	AuthorId       int
 	AuthorName     string `gorm:"type:varchar(255)"`
 	AuthorEmail    string `gorm:"type:varchar(255)"`
 	AuthoredDate   time.Time

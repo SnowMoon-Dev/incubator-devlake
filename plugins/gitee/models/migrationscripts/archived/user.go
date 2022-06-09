@@ -1,6 +1,8 @@
-package models
+package archived
 
-import "github.com/apache/incubator-devlake/models/common"
+import (
+	"github.com/apache/incubator-devlake/models/migrationscripts/archived"
+)
 
 type GiteeUser struct {
 	Id                int    `json:"id" gorm:"primaryKey"`
@@ -20,7 +22,7 @@ type GiteeUser struct {
 	SubscriptionsUrl  string `json:"subscriptions_url" gorm:"type:varchar(255)"`
 	Url               string `json:"url" gorm:"type:varchar(255)"`
 	Type              string `json:"type" gorm:"type:varchar(255)"`
-	common.NoPKModel
+	archived.NoPKModel
 }
 
 func (GiteeUser) TableName() string {

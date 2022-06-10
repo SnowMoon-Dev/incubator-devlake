@@ -1,20 +1,21 @@
 package tasks
 
 import (
+	"reflect"
+
 	"github.com/apache/incubator-devlake/models/domainlayer/code"
 	"github.com/apache/incubator-devlake/models/domainlayer/didgen"
 	"github.com/apache/incubator-devlake/plugins/core"
 	"github.com/apache/incubator-devlake/plugins/gitee/models"
 	giteeModels "github.com/apache/incubator-devlake/plugins/gitee/models"
 	"github.com/apache/incubator-devlake/plugins/helper"
-	"reflect"
 )
 
 var ConvertApiCommitsMeta = core.SubTaskMeta{
 	Name:             "convertApiCommits",
 	EntryPoint:       ConvertApiCommits,
 	EnabledByDefault: true,
-	Description:      "Update domain layer commit according to GiteexCommit",
+	Description:      "Convert tool layer table gitee_commits into  domain layer table commits",
 }
 
 func ConvertApiCommits(taskCtx core.SubTaskContext) error {

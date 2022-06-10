@@ -9,19 +9,19 @@ import (
 var PluginEntry impl.Gitee //nolint
 
 func main() {
-	githubCmd := &cobra.Command{Use: "gitee"}
-	owner := githubCmd.Flags().StringP("owner", "o", "", "github owner")
-	repo := githubCmd.Flags().StringP("repo", "r", "", "github repo")
-	token := githubCmd.Flags().StringP("auth", "a", "", "access token")
-	_ = githubCmd.MarkFlagRequired("owner")
-	_ = githubCmd.MarkFlagRequired("repo")
+	giteeCmd := &cobra.Command{Use: "gitee"}
+	owner := giteeCmd.Flags().StringP("owner", "o", "", "github owner")
+	repo := giteeCmd.Flags().StringP("repo", "r", "", "github repo")
+	token := giteeCmd.Flags().StringP("auth", "a", "", "access token")
+	_ = giteeCmd.MarkFlagRequired("owner")
+	_ = giteeCmd.MarkFlagRequired("repo")
 
-	githubCmd.Run = func(cmd *cobra.Command, args []string) {
+	giteeCmd.Run = func(cmd *cobra.Command, args []string) {
 		runner.DirectRun(cmd, args, PluginEntry, map[string]interface{}{
 			"owner": *owner,
 			"repo":  *repo,
 			"token": *token,
 		})
 	}
-	runner.RunCmd(githubCmd)
+	runner.RunCmd(giteeCmd)
 }

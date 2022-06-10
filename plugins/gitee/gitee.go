@@ -10,8 +10,8 @@ var PluginEntry impl.Gitee //nolint
 
 func main() {
 	giteeCmd := &cobra.Command{Use: "gitee"}
-	owner := giteeCmd.Flags().StringP("owner", "o", "", "github owner")
-	repo := giteeCmd.Flags().StringP("repo", "r", "", "github repo")
+	owner := giteeCmd.Flags().StringP("owner", "o", "", "gitee owner")
+	repo := giteeCmd.Flags().StringP("repo", "r", "", "gitee repo")
 	token := giteeCmd.Flags().StringP("auth", "a", "", "access token")
 	_ = giteeCmd.MarkFlagRequired("owner")
 	_ = giteeCmd.MarkFlagRequired("repo")

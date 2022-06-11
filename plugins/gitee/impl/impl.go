@@ -29,8 +29,14 @@ func (plugin Gitee) Description() string {
 
 func (plugin Gitee) SubTaskMetas() []core.SubTaskMeta {
 	return []core.SubTaskMeta{
+		tasks.CollectApiRepoMeta,
+		tasks.ExtractApiRepoMeta,
 		tasks.CollectCommitsMeta,
 		tasks.ExtractCommitsMeta,
+		tasks.ConvertRepoMeta,
+		tasks.ConvertCommitsMeta,
+		tasks.CollectApiIssueCommentsMeta,
+		tasks.ExtractApiIssueCommentsMeta,
 	}
 }
 

@@ -15,34 +15,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package migrationscripts
+package archived
 
 import (
-	"context"
+	"time"
 
-	"github.com/apache/incubator-devlake/plugins/gitee/models/migrationscripts/archived"
-	"gorm.io/gorm"
+	"github.com/apache/incubator-devlake/models/migrationscripts/archived"
 )
 
-type InitSchemas struct{}
-
-func (*InitSchemas) Up(ctx context.Context, db *gorm.DB) error {
-	return db.Migrator().AutoMigrate(
-		&archived.GiteeCommit{},
-		&archived.GiteeUser{},
-		&archived.GiteeRepo{},
-		&archived.GiteeRepoCommit{},
-		&archived.GiteePullRequest{},
-		&archived.GiteePullRequestComment{},
-		&archived.GiteeIssue{},
-		&archived.GiteeIssueComment{},
-	)
+type GiteeIssueComment struct {
+	GiteeId        int `gorm:"primaryKey"`
+	IssueId        int `gorm:"index;comment:References the Issue"`
+	Body           string
+	AuthorUsername string `gorm:"type:varchar(255)"`
+	AuthorUserId   int
+	GiteeCreatedAt time.Time
+	GiteeUpdatedAt time.Time `gorm:"index"`
+	archived.NoPKModel
 }
 
-func (*InitSchemas) Version() uint64 {
-	return 20220407201161
-}
-
-func (*InitSchemas) Name() string {
-	return "Gitee init schemas"
+func (GiteeIssueComment) TableName() string {
+	return "_tool_gitee_issue_comments"
 }

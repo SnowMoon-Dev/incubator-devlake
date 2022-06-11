@@ -2,6 +2,7 @@ package tasks
 
 import (
 	"encoding/json"
+
 	"github.com/apache/incubator-devlake/plugins/core"
 	"github.com/apache/incubator-devlake/plugins/gitee/models"
 	"github.com/apache/incubator-devlake/plugins/helper"
@@ -40,18 +41,23 @@ type GiteeApiCommitResponse struct {
 }
 
 func ExtractApiCommits(taskCtx core.SubTaskContext) error {
-	rawDataSubTaskArgs, _ := CreateRawDataSubTaskArgs(taskCtx, RAW_COMMIT_TABLE)
+	rawDataSubTaskArgs, data := CreateRawDataSubTaskArgs(taskCtx, RAW_COMMIT_TABLE)
 
 	extractor, err := helper.NewApiExtractor(helper.ApiExtractorArgs{
 		RawDataSubTaskArgs: *rawDataSubTaskArgs,
 		Extract: func(row *helper.RawData) ([]interface{}, error) {
-			results := make([]interface{}, 0, 3)
+			results := make([]interface{}, 0, 4)
 
 			commit := &GiteeApiCommitResponse{}
 
 			err := json.Unmarshal(row.Data, commit)
+
 			if err != nil {
 				return nil, err
+			}
+
+			if commit.Sha == "" {
+				return nil, nil
 			}
 
 			giteeCommit, err := ConvertCommit(commit)
@@ -59,13 +65,6 @@ func ExtractApiCommits(taskCtx core.SubTaskContext) error {
 			if err != nil {
 				return nil, err
 			}
-
-			// create repo/commits relationship
-			//giteeRepoCommit := &models.GiteeRepoCommit{RepoId: data.Repo.RepoId, CommitSha: commit.Sha}
-
-			// create gitee user
-			//giteeUserAuthor := &models.GiteeUser{}
-			//giteeUserAuthor.Name = giteeUserAuthor.Name
 
 			if commit.Author != nil {
 				giteeCommit.AuthorId = commit.Author.Id
@@ -76,8 +75,13 @@ func ExtractApiCommits(taskCtx core.SubTaskContext) error {
 				results = append(results, commit.Committer)
 
 			}
+
+			giteeRepoCommit := &models.GiteeRepoCommit{
+				RepoId:    data.Repo.GiteeId,
+				CommitSha: commit.Sha,
+			}
 			results = append(results, giteeCommit)
-			//results = append(results, giteeRepoCommit)
+			results = append(results, giteeRepoCommit)
 			return results, nil
 		},
 	})

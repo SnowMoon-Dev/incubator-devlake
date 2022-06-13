@@ -15,27 +15,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package tasks
+package archived
 
-import (
-	"time"
+import "github.com/apache/incubator-devlake/models/migrationscripts/archived"
 
-	"github.com/apache/incubator-devlake/plugins/gitee/models"
-	"github.com/apache/incubator-devlake/plugins/helper"
-)
+// Please note that Issue Labels can also apply to Pull Requests.
+// Pull Requests are considered Issues in GitHub.
 
-type GiteeOptions struct {
-	Tasks []string `json:"tasks,omitempty"`
-	Since string
-	Owner string
-	Repo  string
-	Token string
-	models.Config
+type GiteeIssueLabel struct {
+	IssueId   int    `gorm:"primaryKey;autoIncrement:false"`
+	LabelName string `gorm:"primaryKey;type:varchar(255)"`
+	archived.NoPKModel
 }
 
-type GiteeTaskData struct {
-	Options   *GiteeOptions
-	ApiClient *helper.ApiAsyncClient
-	Repo      *models.GiteeRepo
-	Since     *time.Time
+func (GiteeIssueLabel) TableName() string {
+	return "_tool_gitee_issue_labels"
 }

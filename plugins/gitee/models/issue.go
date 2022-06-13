@@ -26,13 +26,15 @@ import (
 type GiteeIssue struct {
 	GiteeId         int    `gorm:"primaryKey"`
 	RepoId          int    `gorm:"index"`
-	Number          int    `gorm:"index;comment:Used in API requests ex. api/repo/1/issue/<THIS_NUMBER>"`
+	Number          string `gorm:"index;comment:Used in API requests ex. api/repo/1/issue/<THIS_NUMBER>"`
 	State           string `gorm:"type:varchar(255)"`
 	Title           string
 	Body            string
 	Priority        string `gorm:"type:varchar(255)"`
 	Type            string `gorm:"type:varchar(100)"`
 	Status          string `gorm:"type:varchar(255)"`
+	AuthorId        int
+	AuthorName      string `gorm:"type:varchar(255)"`
 	AssigneeId      int
 	AssigneeName    string `gorm:"type:varchar(255)"`
 	LeadTimeMinutes uint

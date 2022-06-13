@@ -15,27 +15,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package tasks
+package models
 
 import (
 	"time"
 
-	"github.com/apache/incubator-devlake/plugins/gitee/models"
-	"github.com/apache/incubator-devlake/plugins/helper"
+	"github.com/apache/incubator-devlake/models/common"
 )
 
-type GiteeOptions struct {
-	Tasks []string `json:"tasks,omitempty"`
-	Since string
-	Owner string
-	Repo  string
-	Token string
-	models.Config
+type GiteeCommitStat struct {
+	Sha           string    `gorm:"primaryKey;type:varchar(40)"`
+	Additions     int       `gorm:"comment:Added lines of code"`
+	Deletions     int       `gorm:"comment:Deleted lines of code"`
+	CommittedDate time.Time `gorm:"index"`
+	common.NoPKModel
 }
 
-type GiteeTaskData struct {
-	Options   *GiteeOptions
-	ApiClient *helper.ApiAsyncClient
-	Repo      *models.GiteeRepo
-	Since     *time.Time
+func (GiteeCommitStat) TableName() string {
+	return "_tool_gitee_commit_stats"
 }

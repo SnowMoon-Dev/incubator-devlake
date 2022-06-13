@@ -37,6 +37,12 @@ func (plugin Gitee) SubTaskMetas() []core.SubTaskMeta {
 		tasks.ConvertCommitsMeta,
 		tasks.CollectApiIssueCommentsMeta,
 		tasks.ExtractApiIssueCommentsMeta,
+		tasks.CollectApiCommitStatsMeta,
+		tasks.ExtractApiCommitStatsMeta,
+		tasks.CollectApiIssuesMeta,
+		tasks.ExtractApiIssuesMeta,
+		tasks.ConvertIssuesMeta,
+		tasks.ConvertIssueLabelsMeta,
 	}
 }
 

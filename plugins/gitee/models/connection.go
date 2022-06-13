@@ -42,3 +42,23 @@ type TestConnectionRequest struct {
 	Auth     string `json:"auth" validate:"required"`
 	Proxy    string `json:"proxy"`
 }
+
+type Config struct {
+	PrType               string `mapstructure:"prType" env:"GITEE_PR_TYPE" json:"prType"`
+	PrComponent          string `mapstructure:"prComponent" env:"GITEE_PR_COMPONENT" json:"prComponent"`
+	IssueSeverity        string `mapstructure:"issueSeverity" env:"GITEE_ISSUE_SEVERITY" json:"issueSeverity"`
+	IssuePriority        string `mapstructure:"issuePriority" env:"GITEE_ISSUE_PRIORITY" json:"issuePriority"`
+	IssueComponent       string `mapstructure:"issueComponent" env:"GITEE_ISSUE_COMPONENT" json:"issueComponent"`
+	IssueTypeBug         string `mapstructure:"issueTypeBug" env:"GITEE_ISSUE_TYPE_BUG" json:"issueTypeBug"`
+	IssueTypeIncident    string `mapstructure:"issueTypeIncident" env:"GITEE_ISSUE_TYPE_INCIDENT" json:"issueTypeIncident"`
+	IssueTypeRequirement string `mapstructure:"issueTypeRequirement" env:"GITEE_ISSUE_TYPE_REQUIREMENT" json:"issueTypeRequirement"`
+}
+
+// Using Public Email because it requires authentication, and it is public information anyway.
+// We're not using email information for anything here.
+type PublicEmail struct {
+	Email      string
+	Primary    bool
+	Verified   bool
+	Visibility string
+}

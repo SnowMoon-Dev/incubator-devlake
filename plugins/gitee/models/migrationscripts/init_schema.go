@@ -36,11 +36,13 @@ func (*InitSchemas) Up(ctx context.Context, db *gorm.DB) error {
 		&archived.GiteePullRequestComment{},
 		&archived.GiteeIssue{},
 		&archived.GiteeIssueComment{},
+		&archived.GiteeCommitStat{},
+		&archived.GiteeIssueLabel{},
 	)
 }
 
 func (*InitSchemas) Version() uint64 {
-	return 20220407201161
+	return 20220407201165
 }
 
 func (*InitSchemas) Name() string {

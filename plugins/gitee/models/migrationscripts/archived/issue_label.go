@@ -20,7 +20,7 @@ package archived
 import "github.com/apache/incubator-devlake/models/migrationscripts/archived"
 
 // Please note that Issue Labels can also apply to Pull Requests.
-// Pull Requests are considered Issues in GitHub.
+// Pull Requests are considered Issues in Gitee.
 
 type GiteeIssueLabel struct {
 	IssueId   int    `gorm:"primaryKey;autoIncrement:false"`

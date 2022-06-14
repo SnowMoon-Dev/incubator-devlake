@@ -26,7 +26,7 @@ import (
 	"github.com/apache/incubator-devlake/models/domainlayer"
 	"github.com/apache/incubator-devlake/models/domainlayer/didgen"
 	"github.com/apache/incubator-devlake/models/domainlayer/ticket"
-	githubModels "github.com/apache/incubator-devlake/plugins/gitee/models"
+	giteeModels "github.com/apache/incubator-devlake/plugins/gitee/models"
 )
 
 var ConvertIssuesMeta = core.SubTaskMeta{
@@ -41,7 +41,7 @@ func ConvertIssues(taskCtx core.SubTaskContext) error {
 	rawDataSubTaskArgs, data := CreateRawDataSubTaskArgs(taskCtx, RAW_ISSUE_TABLE)
 	repoId := data.Repo.GiteeId
 
-	issue := &githubModels.GiteeIssue{}
+	issue := &giteeModels.GiteeIssue{}
 	cursor, err := db.Model(issue).Where("repo_id = ?", repoId).Rows()
 
 	if err != nil {
@@ -49,16 +49,16 @@ func ConvertIssues(taskCtx core.SubTaskContext) error {
 	}
 	defer cursor.Close()
 
-	issueIdGen := didgen.NewDomainIdGenerator(&githubModels.GiteeIssue{})
-	userIdGen := didgen.NewDomainIdGenerator(&githubModels.GiteeUser{})
-	boardIdGen := didgen.NewDomainIdGenerator(&githubModels.GiteeRepo{})
+	issueIdGen := didgen.NewDomainIdGenerator(&giteeModels.GiteeIssue{})
+	userIdGen := didgen.NewDomainIdGenerator(&giteeModels.GiteeUser{})
+	boardIdGen := didgen.NewDomainIdGenerator(&giteeModels.GiteeRepo{})
 
 	converter, err := helper.NewDataConverter(helper.DataConverterArgs{
 		RawDataSubTaskArgs: *rawDataSubTaskArgs,
-		InputRowType:       reflect.TypeOf(githubModels.GiteeIssue{}),
+		InputRowType:       reflect.TypeOf(giteeModels.GiteeIssue{}),
 		Input:              cursor,
 		Convert: func(inputRow interface{}) ([]interface{}, error) {
-			issue := inputRow.(*githubModels.GiteeIssue)
+			issue := inputRow.(*giteeModels.GiteeIssue)
 			domainIssue := &ticket.Issue{
 				DomainEntity:    domainlayer.DomainEntity{Id: issueIdGen.Generate(issue.GiteeId)},
 				Number:          issue.Number,

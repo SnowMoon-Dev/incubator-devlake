@@ -49,7 +49,7 @@ func CollectApiCommitStats(taskCtx core.SubTaskContext) error {
 		Where("_tool_gitee_repo_commits.repo_id = ?", data.Repo.GiteeId).
 		Order("committed_date DESC").Limit(1).Find(&latestUpdated).Error
 	if err != nil {
-		return fmt.Errorf("failed to get latest github commit record: %w", err)
+		return fmt.Errorf("failed to get latest gitee commit record: %w", err)
 	}
 
 	cursor, err := db.Model(&models.GiteeCommit{}).

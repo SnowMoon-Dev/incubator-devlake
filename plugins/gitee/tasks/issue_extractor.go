@@ -163,7 +163,7 @@ func ExtractApiIssues(taskCtx core.SubTaskContext) error {
 				return nil, nil
 			}
 			results := make([]interface{}, 0, 2)
-			giteeIssue, err := convertGithubIssue(body, data.Repo.GiteeId)
+			giteeIssue, err := convertGiteeIssue(body, data.Repo.GiteeId)
 			if err != nil {
 				return nil, err
 			}
@@ -223,7 +223,7 @@ func ExtractApiIssues(taskCtx core.SubTaskContext) error {
 
 	return extractor.Execute()
 }
-func convertGithubIssue(issue *IssuesResponse, repositoryId int) (*models.GiteeIssue, error) {
+func convertGiteeIssue(issue *IssuesResponse, repositoryId int) (*models.GiteeIssue, error) {
 	giteeIssue := &models.GiteeIssue{
 		GiteeId:        issue.GiteeId,
 		RepoId:         repositoryId,

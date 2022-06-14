@@ -22,7 +22,7 @@ import (
 )
 
 // Please note that Issue Labels can also apply to Pull Requests.
-// Pull Requests are considered Issues in GitHub.
+// Pull Requests are considered Issues in Gitee.
 
 type GiteeIssueLabel struct {
 	IssueId   int    `gorm:"primaryKey;autoIncrement:false"`

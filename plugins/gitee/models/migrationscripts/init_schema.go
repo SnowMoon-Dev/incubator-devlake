@@ -28,21 +28,25 @@ type InitSchemas struct{}
 
 func (*InitSchemas) Up(ctx context.Context, db *gorm.DB) error {
 	return db.Migrator().AutoMigrate(
-		&archived.GiteeCommit{},
-		&archived.GiteeUser{},
 		&archived.GiteeRepo{},
+		&archived.GiteeCommit{},
 		&archived.GiteeRepoCommit{},
 		&archived.GiteePullRequest{},
+		&archived.GiteePullRequestLabel{},
+		&archived.GiteeUser{},
 		&archived.GiteePullRequestComment{},
 		&archived.GiteeIssue{},
 		&archived.GiteeIssueComment{},
 		&archived.GiteeCommitStat{},
 		&archived.GiteeIssueLabel{},
+		&archived.GiteePullRequestCommit{},
+		&archived.GiteePullRequestIssue{},
+		&archived.GiteeReviewer{},
 	)
 }
 
 func (*InitSchemas) Version() uint64 {
-	return 20220407201165
+	return 20220407201202
 }
 
 func (*InitSchemas) Name() string {

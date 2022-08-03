@@ -77,6 +77,8 @@ func (plugin Gitee) SubTaskMetas() []core.SubTaskMeta {
 		tasks.ConvertPullRequestsMeta,
 		tasks.ConvertPullRequestLabelsMeta,
 		tasks.ConvertPullRequestIssuesMeta,
+		tasks.CollectAccountsMeta,
+		tasks.ExtractAccountsMeta,
 		tasks.ConvertAccountsMeta,
 		tasks.ConvertIssueCommentsMeta,
 		tasks.ConvertPullRequestCommentsMeta,

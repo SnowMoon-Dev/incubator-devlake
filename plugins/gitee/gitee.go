@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package main // must be main for plugin entry point
 
 import (
 	"github.com/apache/incubator-devlake/plugins/gitee/impl"
@@ -23,6 +23,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// PluginEntry is a variable exported for Framework to search and load
 var PluginEntry impl.Gitee //nolint
 
 func main() {
